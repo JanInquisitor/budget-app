@@ -1,5 +1,4 @@
-from re import M
-from typing import List, Any
+from typing import List
 
 
 class Category:
@@ -24,7 +23,7 @@ class Category:
             funds += self.ledger[i]['amount']
 
         # If the passed amount is less or equal than the current funds then it returns `True`
-        if amount <= funds:
+        if funds >= amount:
 
             # Returns true after confirming the condition
             return True
@@ -56,7 +55,7 @@ class Category:
         return False
 
     def transfer(self, amount: int, target) -> bool:
-        # If the withdrawal is successfull then runs the target `deposit` function
+        # If the withdrawal is successful then runs the target `deposit` function
         if self.withdraw(amount, f'Transfer to {target.name.capitalize()}'):
 
             # Adds the amount passed to the target object with message
@@ -68,35 +67,31 @@ class Category:
         # Default value
         return False
 
-    def __repr__(self):
-        char_limit: int  # a char limit variable
-        title: str = ['*'] * char_limit
+    def __repr__(self) -> str:
+        header: str = self.name.center(30, "*") + "\n"
+        ledger: str = ""
+        for item in self.ledger:
+            # format description and amount
+            line_description = "{:<23}".format(item["description"])
+            line_amount = "{:>7.2f}".format(item["amount"])
+            # Truncate ledger description and amount to 23 and 7 characters respectively
+            ledger += "{}{}\n".format(line_description[:23], line_amount[:7])
+        total = "Total: {:.2f}".format(self.get_balance())
 
-        pass
+        return header + ledger + total
 
     def __str__(self):
-        pass
+        return self.__repr__()
 
 
-def create_spend_chart(categories: List[Category]):
-    # The chart should show the percentage spent in each category passed in to the function.
-    # The percentage spent should be calculated only with withdrawals and not with deposits.
-    # Down the left side of the chart should be labels 0 - 100. The "bars" in the bar chart should be made out of the "o" character.
-    # The height of each bar should be rounded down to the nearest 10. The horizontal line below the bars should go two spaces past the final bar.
-    # Each category name should be written vertically below the bar. There should be a title at the top that says "Percentage spent by category".
+food = Category('food')
+food.deposit(900, 'For food')
+food.withdraw(10, 'pizza')
 
-    # This function will be tested with up to four categories.
-    pass
-
-
-# food = Category('food')
-# food.deposit(900, 'For food')
-# food.withdraw(10, 'pizza')
-
-# entertainment = Category('entertainment')
-# entertainment.deposit(500, 'for movies and games')
-# entertainment.withdraw(20, 'movies')
-# entertainment.get_balance()
+entertainment = Category('entertainment')
+entertainment.deposit(500, 'for movies and games')
+entertainment.withdraw(20, 'movies')
+entertainment.get_balance()
 
 # print(f"entertainment before: {entertainment.ledger}")
 # print(f"food before: {food.ledger} \n")
